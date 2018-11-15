@@ -1,31 +1,28 @@
-# VNet Stuff
-resource "azurerm_virtual_network" "mynet"{
-  name="myvnet"
-  address_space=["10.0.0.0/16"]
+resource "azurerm_network_interface " "mynic"{
+  name="mynic"
   location="${var.location}"
+  resouce_group_name="${var.rg}"
+  network_security_group_id="${azurerm_network_security_group.secgroup.id}"
+  ip_configuration {
+    name="mynicipconfig"
+    subnet_id="${azurerm_subnet.mysub.id}"
+    private_ip_address_allocation="dynamic"
+    public_ip_address_id="${azurerm_public_ip.myip.id}"
+  } 
+}
+resource "random_id" "randomid" {
+  keepers = { 
+      resource_group="${azurerm_resource_group.thegroup.name}"
+  }
+  byte_length=8
+}
+resource "azurerm_storage_account" "mystorage" {
+  name="diag${random_id.randomid.hex}"
   resource_group_name="${azurerm_resource_group.thegroup.name}"
+  location="${var.location}"
+  account_tier="Standard"
+  account_replication_type="LRS"
   tags{
     environment="Testing"
-  }
+  }     
 }
-resource "azurerm_subnet" "mysub"{
-  name="mysubnet"
-  resource_group_name="${azurerm_resource_group.thegroup.name}"
-  virtual_network_name="${azurerm_virtual_network.mynet.name}"
-  address_prefix="10.0.1.0/24"
-}
-
-resource "azurerm_public_ip" "myip"{
-  name="table2ehpdevopsvmPublicIP"
-  location="${var.location}"
-  resource_group_name="${azurerm_resource_group.thegroup.name}"
-  public_ip_address_allocation="Static"
-  tags{
-   environment="testing"
-  }
-}
-output "vm_ip" {
-  value = "${azurerm_public_ip.myip.*.ip_address}"
-}
-
-

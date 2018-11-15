@@ -10,6 +10,7 @@ variable "sub_id"{}
 variable "tenant"{}
 variable "location"{}
 variable "rg"{}
+variable "sec_group_name"{}
 output "more"{
   value="${var.appid}"
 }
