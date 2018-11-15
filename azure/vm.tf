@@ -16,7 +16,7 @@ resource "azurerm_subnet" "mysub"{
 }
 
 resource "azurerm_public_ip" "myip"{
-  name="table7jkpubip"
+  name="table2ehpdevopsvmPublicIP"
   location="${var.location}"
   resource_group_name="${azurerm_resource_group.thegroup.name}"
   public_ip_address_allocation="Static"
